@@ -1,4 +1,4 @@
----
+0.02---
 title: "Homework 2"
 author: "Gianni Spiga"
 date: "2022-10-08"
@@ -29,7 +29,6 @@ Pfemdies76 <- 0.026831
 # Case 1, both survive 2 years
 PbothSurv2 <-
   (1 - Pmaledies80) * (1 - Pmaledies81) * (1 - Pfemdies75) * (1 - Pfemdies76)
-#PbothSurv2
 
 
 #Case 2, Fem lives 2 years, males dies year 1
@@ -46,7 +45,7 @@ Pmale2fem2 <- (1 - Pmaledies80) * (1 - Pmaledies81) * (1 - Pfemdies75) * (Pfemdi
 
 
 V2 <-
-  (1000 / (1.05) ^ 2) * (PbothSurv2 + Pfem2male1 + Pfem2male2 + Pmale2fem1 + Pfem2male2)
+  (1000 / (1.05) ^ 2) * (PbothSurv2 + Pfem2male1 + Pfem2male2 + Pmale2fem1 + Pmale2fem2)
 V2
 ```
 
