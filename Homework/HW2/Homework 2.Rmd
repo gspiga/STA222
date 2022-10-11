@@ -1,4 +1,4 @@
-0.02---
+---
 title: "Homework 2"
 author: "Gianni Spiga"
 date: "2022-10-08"
