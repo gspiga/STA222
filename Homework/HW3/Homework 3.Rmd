@@ -1,0 +1,26 @@
+---
+title: "Homework 3"
+author: "Gianni Spiga"
+date: '2022-10-15'
+output: html_document
+---
+
+## Loading in the Data
+
+```{r}
+vars <- c("id", "clinic", "status", "time", "prison", "methadone")
+addicts <-
+  read.table(
+    url(
+      "https://dmrocke.ucdavis.edu/Class/BST222.2022.Fall/addicts.txt"
+    ),
+    header = F,
+    col.names = vars
+  )
+addicts
+```
+
+## Question 1 
+
+
+
