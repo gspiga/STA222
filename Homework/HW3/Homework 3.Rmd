@@ -108,7 +108,7 @@ Our 95% confidence interval for $e^{Clinic_2}$ is the interval $(0.2249, 0.5176)
 
 ## Question 6
 
-Ask professor
+For this dataset, our best statistic of choice would be the Wald Test since we have a larger sample size and Likelihood Ratio Test performs better when sample size is small. However, all three tests tell us (with Wald being the smallest p-value), that we should conclude there is a significant difference between the two clinics. 
 
 ## Question 7
 
@@ -121,13 +121,13 @@ Observing our hazard ratio coefficient confidence intervals, we can see that the
 
 ## Question 8
 
-```{r}
-addicts.cox3 <- coxph(surv_object ~ clinic + methadone, data = addicts)
+```{r, warning=FALSE}
+addicts.cox3 <- coxph(surv_object ~ factor(clinic), data = addicts)
 summary(addicts.cox3)
 
-KMcurves <- survfit(surv_object ~ clinic + methadone, data = addicts)
+KMcurves <- survfit(surv_object ~ factor(clinic), data = addicts)
 
-CoxPH <- survfit(addicts.cox, data.frame(clinic = 1:2), conf.int = F)
+CoxPH <- survfit(addicts.cox3, data.frame(clinic = c("Clinic1", "Clinic2")), conf.int = F)
 
 fit <- list(CoxPH = CoxPH, KapMei = KMcurves)
 
@@ -136,3 +136,5 @@ compPlot <-
 ggplotly(compPlot[[1]])
 
 ```
+
+We can see that from the plots the Cox Proportional Hazard Model predicts the survivability of addicts from Clinic 1 very accurately, while the the Cox PH for Clinic 2 patients over predicts until right before $Time = 750$, where the Cox PH model begins to under predict the survival probability of Clinic 2 addicts. 
