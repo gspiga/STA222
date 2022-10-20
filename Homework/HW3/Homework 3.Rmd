@@ -127,12 +127,16 @@ summary(addicts.cox3)
 
 KMcurves <- survfit(surv_object ~ factor(clinic), data = addicts)
 
-CoxPH <- survfit(addicts.cox3, data.frame(clinic = c("Clinic1", "Clinic2")), conf.int = F)
+covariates <- data.frame(clinic = c("Clinic1", "Clinic2"), prison = "No", methadone = "65")
+
+
+# CoxPH <- survfit(addicts.cox3, data.frame(clinic = c("Clinic1", "Clinic2")), conf.int = F)
+CoxPH <- survfit(addicts.cox3, covariates, conf.int = F)
 
 fit <- list(CoxPH = CoxPH, KapMei = KMcurves)
 
 compPlot <-
-  ggsurvplot_combine(fit, data = addicts) + labs(title = "Comparison of Cox PH Curves to Kaplan-Meier")
+  ggsurvplot_combine(fit, data = addicts) + labs(title = "Comparison of Cox PH Curves to Kaplan-Meier with No Prison and Methadone at 65")
 ggplotly(compPlot[[1]])
 
 ```
