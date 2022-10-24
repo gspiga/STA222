@@ -55,7 +55,7 @@ ggcoxzph(addicts.zph[2], se = FALSE, font.main = 12, ggtheme = theme_solarized()
 ggcoxzph(addicts.zph[3], se = FALSE, font.main = 12, ggtheme = theme_solarized(), point.col = "#0096FF", ylim = c(-0.5,0.5))
 ```
 
-When we look at the plots of our Schoenfield Residuals, as well as our p-values, we can see that both methadone and prison variables are significantly proportional while our clinic variable violates our proportinality assumption at any reasonable $\alpha$.
+When we look at the plots of our Schoenfield Residuals, we can see that our variation over time gets larger negative residuals as time goes on for the clinic variable. Our plot for the prison gives the impression that we have a pattern of variation, however our p-value conflcits this conclusion. Along with this, it should be noted for our prison variable is not as huge than that of the clinic variable. Because of this,  we can see that both methadone and prison variables are significantly proportional while our clinic variable violates our proportinality assumption at any reasonable $\alpha$. 
 
 ## Question 2
 
@@ -174,18 +174,18 @@ ggplotly(
 * Martingale Residuals
   + 8, 9, 26
 * Deviance Residuals
-  + 8, 26, 187
+  + 8, 26, 123, 175, 187
 * Clinic Influence 
   + 111, 131, 136
 * Prison Influence
-  + 8, 12, 26
+  + 8, 9 , 12, 26
 * Methadone Level Influence
-  + 24, 70, 86
+  + 84, 111, 156
   
-  From the residual plots, the most important pbservations to examine would be 8 and 26. Let's observe these two observations:
+  From the residual plots, the most important pbservations to examine would be 8 9, 26, and 111. Let's observe these two observations:
 
 ```{r}
-addicts[c(8, 26),]
+addicts[c(8, 9, 26, 111),]
 ``` 
 
-Both of these observations were prisoners who were censored observations in our data. Given their long survival times, they could have both felt they no longer needed to be part of the study. 
+Observations 8, 26, an 111 were prisoners who were censored observations in our data. Given their long survival times, they could have felt they no longer needed to be part of the study. These prisoners also had low methadone levels. However, 111 differs from 8 and 26 since they are from Clinic 2. Observation 9 is more unique, they had a much longer time who actually was recorded as leaving the clinic, again with a low methadone level. 
