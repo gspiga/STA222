@@ -120,19 +120,151 @@ summary(burn.cox.indep.T)
 
 
 #Building with treatement and burnpercentage
-burn.cox.indep.TPB <- coxph(survTimeIndep ~ Treatment + PercentBurned, data = burn1)
-summary(burn.cox.indep.TPB)
+# burn.cox.indep.TPB <- coxph(survTimeIndep ~ Treatment + PercentBurned, data = burn1)
+# summary(burn.cox.indep.TPB)
 
 #Building with treatement, burnpercentage, and burn Type 
-burn.cox.indep.TPBbt <- coxph(survTimeIndep ~ Treatment + PercentBurned + BurnType, data = burn1)
-summary(burn.cox.indep.TPBbt)
+# burn.cox.indep.TPBbt <- coxph(survTimeIndep ~ Treatment + PercentBurned + BurnType, data = burn1)
+# summary(burn.cox.indep.TPBbt)
 
 
 #Building with treatement, burnpercentage, and burn Type + Respartory Tract
-burn.cox.indep.TPBbtResp <- coxph(survTimeIndep ~ Treatment + PercentBurned + BurnType + SiteRespTract, data = burn1)
-summary(burn.cox.indep.TPBbtResp)
+# burn.cox.indep.TPBbtResp <- coxph(survTimeIndep ~ Treatment + PercentBurned + BurnType + SiteRespTract, data = burn1)
+# summary(burn.cox.indep.TPBbtResp)
 
 #Building with treatement, burnpercentage, and burn Type + resp Tract and gender
-burn.cox.indep.TPBbtRespG <- coxph(survTimeIndep ~ Treatment + PercentBurned + BurnType + SiteRespTract + Gender, data = burn1)
-summary(burn.cox.indep.TPBbtRespG)
+# burn.cox.indep.TPBbtRespG <- coxph(survTimeIndep ~ Treatment + PercentBurned + BurnType + SiteRespTract + Gender, data = burn1)
+# summary(burn.cox.indep.TPBbtRespG)
+
+# Build a model with all of the above + race
+summary(coxph(survTimeIndep ~ Treatment + PercentBurned + BurnType + SiteRespTract + Gender + Race, data = burn1))
+
+
+# We can see from p-values that Treatment, Burn Type, and Race are the only variables with significance, so we will build a cox model using these
+burn.cox <- coxph(survTimeIndep ~ Treatment + BurnType + Race, data = burn1)
+summary(burn.cox)
+```
+
+LRT and Wald Test both provide evidence that there is a significant difference with patients with differrent treatments, burn types, and race. 
+
+### Question 4 
+
+  
+```{r}
+# We check Residuals
+
+#Schoenfield
+burn.zph <- cox.zph(burn.cox)
+
+
+ggcoxzph(
+  burn.zph[1],
+  se = FALSE,
+  font.main = 12,
+  ggtheme = theme_fivethirtyeight(),
+  point.col = "#5d8aa8",
+)
+
+ggcoxzph(
+  burn.zph[2],
+  se = FALSE,
+  font.main = 12,
+  ggtheme = theme_fivethirtyeight(),
+  point.col = "#5d8aa8",
+)
+
+ggcoxzph(
+  burn.zph[3],
+  se = FALSE,
+  font.main = 12,
+  ggtheme = theme_fivethirtyeight(),
+  point.col = "#5d8aa8"
+)
+
+
+# Martingale Residuals 
+burn.mart<- residuals(burn.cox, type = "martingale")
+
+burn.lowess <- as.data.frame(lowess(burn1$T3, burn.mart))
+
+# Plot Martingale 
+ggplotly(
+  ggplot() + aes(burn1$T3, burn.mart) + geom_point(col = "#5d8aa8") + labs(x = "Time", y = "Martingale Residuals", title = "Martingale Residuals vs. Time till Infection with Straphylocous Aureaus") + geom_line(data = burn.lowess, aes(x = x, y = y), col = "#388E3C") + theme_fivethirtyeight()
+)
+
+# We can see that we need a transformation, so we use log time 
+burn.lowess.log <-  as.data.frame(lowess(log(burn1$T3), burn.mart))
+
+# Plot Martingale 
+ggplotly(
+  ggplot() + aes(log(burn1$T3), burn.mart) + geom_point(col = "#5d8aa8") + labs(x = "Time", y = "Martingale Residuals", title = "Martingale Residuals vs. Time till Infection with Straphylocous Aureaus") + geom_line(data = burn.lowess.log, aes(x = x, y = y), col = "#388E3C") + theme_fivethirtyeight()
+)
+
+# Let us make time categorical 
+burn1["CatTime"] <-
+  as.factor(cut(burn1$T3,
+      c(0, 49, 100),
+      labels = c("<50", "50+")))
+
+#Buld a new cox Model with new time variable 
+burn.cox.catTime <- coxph(survTimeIndep ~ Treatment + BurnType + Race + CatTime, data = burn1)
+summary(burn.cox.catTime)
+
+### DOES NOT CONVERGE
+```
+
+## Question 5
+```{r}
+# Now we add time dependent covariates
+burn.cox.TD <- coxph(survTimeIndep ~ Treatment + BurnType + Race + T1 + D1+T2+D2 , data = burn1)
+summary(burn.cox.TD)
+
+# We remove the ones that are not significant to the model
+# Now we add time dependent covariates
+burn.cox.TD <- coxph(survTimeIndep ~ Treatment + BurnType + Race + D2 , data = burn1)
+summary(burn.cox.TD)
+```
+
+## Question 6
+```{r}
+drop1(burn.cox.TD, test = "Chisq")
+
+# We check Residuals
+
+#Schoenfield
+burn.zph.TD <- cox.zph(burn.cox.TD)
+
+
+ggcoxzph(
+  burn.zph.TD[1],
+  se = FALSE,
+  font.main = 12,
+  ggtheme = theme_fivethirtyeight(),
+  point.col = "#5d8aa8",
+)
+
+ggcoxzph(
+  burn.zph.TD[2],
+  se = FALSE,
+  font.main = 12,
+  ggtheme = theme_fivethirtyeight(),
+  point.col = "#5d8aa8",
+)
+
+ggcoxzph(
+  burn.zph.TD[3],
+  se = FALSE,
+  font.main = 12,
+  ggtheme = theme_fivethirtyeight(),
+  point.col = "#5d8aa8"
+)
+
+ggcoxzph(
+  burn.zph.TD[4],
+  se = FALSE,
+  font.main = 12,
+  ggtheme = theme_fivethirtyeight(),
+  point.col = "#5d8aa8"
+)
+
 ```
